@@ -5,22 +5,24 @@ import (
 	"testing"
 )
 
-func Benchmark_unmarshalJson(b *testing.B) {
-	m, _ := marshalJson()
+var jsonByte []byte
 
+func init() {
+	jsonByte, _ = marshalJson()
+}
+
+func Benchmark_unmarshalJson(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		json, err := unmarshalJson(m)
+		model, err := unmarshalJson(jsonByte)
 		assert.NoError(b, err)
-		assert.NotNil(b, json)
+		assert.NotNil(b, model)
 	}
 }
 
 func Benchmark_unmarshalJsonDynamic(b *testing.B) {
-	m, _ := marshalJson()
-
 	for i := 0; i < b.N; i++ {
-		json, err := unmarshalJsonDynamic(m)
+		model, err := unmarshalJsonDynamic(jsonByte)
 		assert.NoError(b, err)
-		assert.NotNil(b, json)
+		assert.NotNil(b, model)
 	}
 }
