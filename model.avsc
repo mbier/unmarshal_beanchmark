@@ -1,0 +1,26 @@
+{
+  "type": "record",
+  "name": "Model",
+  "fields": [
+    {
+      "name": "string",
+      "type": "string"
+    },
+    {
+      "name": "float",
+      "type": "float"
+    },
+    {
+      "name": "integer",
+      "type": "int"
+    },
+    {
+      "name": "date",
+      "type": "string"
+    },
+    {
+      "name": "boolean",
+      "type": "boolean"
+    }
+  ]
+}

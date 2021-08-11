@@ -1,0 +1,17 @@
+protoc:
+  version: 3.17.3
+  includes:
+    - .
+  allow_unused_imports: false
+generate:
+  go_options:
+    import_path: github.com/mbier/unmarshal_benchmark
+  plugins:
+    - name: go
+      type: go
+      output: gen/go
+    - name: descriptor_set
+      output: gen/descriptor_set
+      file_suffix: bin
+excludes:
+  - gen

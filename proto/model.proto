@@ -1,0 +1,12 @@
+syntax = "proto3";
+package m;
+
+//import "google/protobuf/timestamp.proto";
+
+message Model {
+  string text = 1;
+  float float = 2;
+  int64 integer = 3;
+//  google.protobuf.Timestamp date = 4;
+  bool boolean = 5;
+}
