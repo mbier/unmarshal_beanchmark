@@ -2,8 +2,9 @@ package unmarshal_benchmark
 
 import (
 	"bytes"
+	"github.com/hamba/avro"
 	"github.com/linkedin/goavro/v2"
-	"github.com/mbier/unmarshal_benchmark/avro"
+	stub "github.com/mbier/unmarshal_benchmark/avro"
 	"io"
 	"io/ioutil"
 	"time"
@@ -18,6 +19,15 @@ func createCodec() (*goavro.Codec, error) {
 	return goavro.NewCodec(string(file))
 }
 
+func createSchema() (avro.Schema, error) {
+	file, err := ioutil.ReadFile("model.avsc")
+	if err != nil {
+		return nil, err
+	}
+
+	return avro.Parse(string(file))
+}
+
 func marshalAvro(codec *goavro.Codec) ([]byte, error) {
 	m := map[string]interface{}{
 		"string":  "string",
@@ -30,7 +40,7 @@ func marshalAvro(codec *goavro.Codec) ([]byte, error) {
 	return codec.SingleFromNative(nil, m)
 }
 
-func unmarshalAvro(codec *goavro.Codec, model []byte) (*Model, error) {
+func unmarshalAvroLinkedin(codec *goavro.Codec, model []byte) (*Model, error) {
 	m := &Model{}
 
 	native, _, err := codec.NativeFromSingle(model)
@@ -52,7 +62,7 @@ func unmarshalAvro(codec *goavro.Codec, model []byte) (*Model, error) {
 func unmarshalAvroGenerated(model io.Reader) (*Model, error) {
 	m := &Model{}
 
-	deserializeModel, err := avro.DeserializeModel(model)
+	deserializeModel, err := stub.DeserializeModel(model)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +79,7 @@ func unmarshalAvroGenerated(model io.Reader) (*Model, error) {
 func marshalAvroGenerated() (*bytes.Buffer, error) {
 	var buf bytes.Buffer
 
-	model := avro.NewModel()
+	model := stub.NewModel()
 	model.String = "string"
 	model.Float = 3.33
 	model.Integer = 3
@@ -81,4 +91,15 @@ func marshalAvroGenerated() (*bytes.Buffer, error) {
 	}
 
 	return &buf, nil
+}
+
+func unmarshalAvroHamba(schema avro.Schema, model []byte) (*Model, error) {
+	m := &Model{}
+
+	err := avro.Unmarshal(schema, model, m)
+	if err != nil {
+		return nil, err
+	}
+
+	return m, nil
 }
